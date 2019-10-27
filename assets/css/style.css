@@ -8,7 +8,7 @@ body {
 #logo {
     opacity: 0.95;
     border-radius: 90%;
-    width: 20%;
+    width: 15%;
     margin-top: 2%;
 }
 
@@ -28,7 +28,6 @@ body {
 }
 
 .btn {
-    margin: 1% auto 1% 5%;
     background-color: rgb(240, 240, 14);
     color: rgb(252, 105, 7);
     font-weight: bold;
@@ -44,7 +43,6 @@ body {
 .form-control {
     width: 90%;
     margin: auto;
-
 }
 
 .formLabel {
@@ -111,32 +109,22 @@ label {
     text-align: center;
 }
 
-table.tbl-entry{
-	padding: 5px 10px;
-}
-
-.input-entry{
-	padding: 5px;
-	border-radius: 5px;
-	min-width: 300px;
-}
-
 table.tbl-map{
-	width: 100%;
+    width: 90%;
+    margin: auto;
 }
 
 table.tbl-map td{
-	width: 50%;
-	vertical-align: top;
-	padding: 10px;
+    padding: 1%;
 }
 
-#map{
-	height: 500px;
+#map {
+	height: 300px;
 }
 
 #panel-direction{
-	height: 500px;
+	height: 300px;
     overflow-x: hidden;
     background-color: rgb(240, 240, 14);
 }
+

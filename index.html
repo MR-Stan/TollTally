@@ -67,7 +67,7 @@
                             <option value="years">Years</option>
                         </select>
                     </div>
-                    <button id="calculateButton" type="button" class="btn btn-primary">Calculate</button>
+                    <button id="submitButton" type="button" class="btn btn-primary">Submit</button>
                 </div>
             </div>
         </div>
@@ -80,15 +80,22 @@
                         <img src="assets/images/TollTally Logo.png" class="card-img-top" id="logo">      
                         <hr>   
                     </div> 
-                    <div id="confirm"></div>
-                    <button id="showDirectionsButton" type="button" class="btn btn-primary">Show Directions</button>
-                    <div id="google">
-                        <table class="tbl-map">
-                            <tr>
-                                <td><div id="map"></div></td>
-                                <td><div id="panel-direction"></div></td>
-                            </tr>
-                        </table>
+                    <div id="confirm" class="container"></div>
+                        <div id="buttonDiv">
+                            <button id="calculateButton" type="button" class="btn btn-primary">Calculate Tolls</button>
+                            <button id="showDirectionsButton" type="button" class="btn btn-primary">Reset</button>
+                            <button id="showDirectionsButton" type="button" class="btn btn-primary">Show Directions</button>
+                        </div>
+                        <div id="google">
+                            <table class="tbl-map">
+                                <tr>
+                                    <td><div id="map"></div></td>
+                                </tr>
+                                <tr>
+                                    <td><div id="panel-direction"></div></td>
+                                </tr>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>

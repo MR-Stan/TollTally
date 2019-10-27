@@ -20,7 +20,7 @@ let tollTallyApp = {
         tollTallyApp.autocompleteAPI();
         $("#resultContainer").hide();
         $("#google").hide();
-        $("#calculateButton").click(function () {
+        $("#submitButton").click(function () {
             tollTallyApp.entryChecker = 0;
             tollTallyApp.originInput();
             tollTallyApp.destinationInput();
@@ -32,10 +32,15 @@ let tollTallyApp = {
             }
             else {
                 tollTallyApp.dummyCalculator();
+                tollTallyApp.getGeolocationData();
             }
 
         });
     },
+
+    reloadPage : function (){
+        window.location.reload();
+     },
 
     // origin input field related methods
     originInput: function () {
@@ -144,10 +149,16 @@ let tollTallyApp = {
         $("#confirm").text("Your trip from " + tollTallyApp.originInputVar + " to " + tollTallyApp.destinationInputVar +
          " was calculated as " + tollTallyApp.frequencyIntInputVar + " trips per " + tollTallyApp.frequencyTypeInputVar + 
          " for " + tollTallyApp.durationIntInputVar + " " + tollTallyApp.durationTypeInputVar + ".");
-    
+        $("#google").show();
+        $("#panel-direction").hide();
+
+        // calculate tolls
+
+
+        // reload page
+
         $("#showDirectionsButton").click(function () { 
-            tollTallyApp.getGeolocationData();
-            $("#google").show();
+            $("#panel-direction").show();
             $("#showDirectionsButton").hide();
         });
     },
@@ -161,12 +172,14 @@ let tollTallyApp = {
 
 
     initNavigateMap: function (mapID, panelDirectionID, startLatitude, startLongitude, endLatitude, endLongitude) {
-        var directionsDisplay = new google.maps.DirectionsRenderer;
+        var directionsDisplay = new google.maps.DirectionsRenderer({
+            preserveViewport: true
+        });
         var directionsService = new google.maps.DirectionsService;
 
         // initialize the map
         var map = new google.maps.Map(document.getElementById(mapID), {
-            zoom: 7,
+            zoom: 10,
             center: { lat: startLatitude, lng: startLongitude }
         });
 
@@ -188,7 +201,7 @@ let tollTallyApp = {
             destination: end,
             travelMode: 'DRIVING'
         }, function (response, status) {
-            //console.log(response);           
+            console.log(response);           
             if (status === 'OK') {
                 directionsDisplay.setDirections(response);
             } 
@@ -239,20 +252,19 @@ let tollTallyApp = {
     autocompleteAPI : function () {
         let inputs = document.getElementsByClassName('query');
         let options = {types: []};
-    
         let autocompletes = [];
     
         for (let i = 0; i < inputs.length; i++) {
-        let autocomplete = new google.maps.places.Autocomplete(inputs[i], options);
-        autocomplete.inputId = inputs[i].id;
-        autocomplete.addListener('place_changed', fillIn);
-        autocompletes.push(autocomplete);
+            let autocomplete = new google.maps.places.Autocomplete(inputs[i], options);
+            autocomplete.inputId = inputs[i].id;
+            autocomplete.addListener('place_changed', fillIn);
+            autocompletes.push(autocomplete);
         }
     
         function fillIn() {
-        console.log(this.inputId);
-        let place = this.getPlace();
-        console.log(place. address_components[0].long_name);
+            //console.log(this.inputId);
+            let place = this.getPlace();
+            //console.log(place. address_components[0].long_name);
         }
     },
 
