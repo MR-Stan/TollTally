@@ -1,0 +1,80 @@
+
+<!DOCTYPE html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="description" content="TollTally Web Application">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>TollTally</title>
+        <!-- MomentJS -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.1/moment.min.js"></script>
+        <!-- Bootstrap -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+        <!-- Local CSS -->
+        <link rel="stylesheet" type="text/css" href="./assets/css/style.css">
+    </head>
+    <body>
+        <header>
+            <!-- logo added here in css -->
+        </header>
+        <main>
+            <!-- holds initial form that the user enters information into -->
+            <div id="inputContainer">
+                <form>
+                    <!-- Origin (starting location) input field -->
+                    <div class="form-group">
+                        <label class="formLabel" for="originInput" id='originLabel'">Starting Location:</label>
+                        <input type="text" class="form-control" id="originInput" aria-describedby="locationHelp" placeholder="Enter starting location">
+                        <small id="locationHelp" class="form-text text-muted">We'll never share your location with anyone else.</small>
+                    </div>
+                    <!-- Destination (ending location) input field -->
+                    <div class="form-group">
+                        <label class="formLabel" for="destinationInput" id='destinationLabel'>Ending Location:</label>
+                        <input type="text" class="form-control" id="destinationInput" placeholder="Enter ending location">
+                    </div>
+                    <!-- Frequency input field -->
+                    <div class="form-group">
+                        <label class="formLabel" for="frequencyInput" id="frequencyLabel">Trip Frequency:</label>
+                        <input type="text" class="form-control" id="frequencyIntInput" placeholder="Enter number of trips">
+                        <select  id="frequencyTypeInput">
+                            <option value="frequencyBlank"></option>
+                            <option value="day">Day</option>
+                            <option value="week">Week</option>
+                            <option value="month">Month</option>
+                            <option value="year">Year</option>
+                        </select>
+                    </div>
+                    <!-- Duration input field -->
+                    <div class="form-group">
+                        <label class="formLabel" for="durationInput" id='durationLabel'>Frequency Duration:</label>
+                        <input type="text" class="form-control" id="durationIntInput" placeholder="Enter duration to calculate for">
+                        <select  id="durationTypeInput">
+                            <option value="DurationBlank"></option>
+                            <option value="days">Days</option>
+                            <option value="weeks">Weeks</option>
+                            <option value="months">Months</option>
+                            <option value="years">Years</option>
+                        </select>
+                    </div>
+                    <button id="submitButton" type="submit" class="btn btn-primary">Submit</button>
+                </form>
+            </div>
+            <!-- holds the form that's shown while calculating -->
+            <div id="calculationContainer">
+
+            </div>
+            <!-- holds the post calculation / result form -->
+            <div id="resultContainer">
+
+            </div>
+        </main>
+        <footer>
+            <p>Copyright Information</p>
+        </footer>
+        <!-- JQuery -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+        <!-- JQueryUI -->
+        <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+        <!-- Local JS -->
+        <script src="./assets/javascript/app.js"></script>
+    </body>
+</html>
