@@ -16,7 +16,6 @@ let tollTallyApp = {
     // function that intially runs
     initialize: function () {
 
-
         $("#submitButton").click(function () {
             tollTallyApp.originInput();
             tollTallyApp.destinationInput();
@@ -31,11 +30,13 @@ let tollTallyApp = {
     // origin input field related methods
     originInput: function () {
         if ($("#originInput").val() === "") {
-            $("#originLabel").css("color", "red");
+            $("#originLabel").css({
+                "color" : "rgb(252, 105, 7)",
+            });
             return;
         }
         else {
-            $("#originLabel").css("color", "black");
+            $("#originLabel").css("color", "rgb(240, 240, 14)");
             tollTallyApp.originInputVar = $("#originInput").val().trim();
             console.log(tollTallyApp.originInputVar);
         }
@@ -44,11 +45,13 @@ let tollTallyApp = {
     // destination input field related methods
     destinationInput: function () {
         if ($("#destinationInput").val() === "") {
-            $("#destinationLabel").css("color", "red");
+            $("#destinationLabel").css({
+                "color" : "rgb(252, 105, 7)",
+            });
             return;
         }
         else {
-            $("#destinationLabel").css("color", "black");
+            $("#destinationLabel").css("color", "rgb(240, 240, 14)");
             tollTallyApp.destinationInputVar = $("#destinationInput").val().trim();
             console.log(tollTallyApp.destinationInputVar);
         }
@@ -56,12 +59,14 @@ let tollTallyApp = {
 
     // frequency input field related methods
     frequencyInput: function () {
-        if ($("#frequencyIntInput").val() === "" || $("#frequencyTypeInput").val() === "") {
-            $("#frequencyLabel").css("color", "red");
+        if ($("#frequencyIntInput").val() === "" || $("#frequencyTypeInput").val() === "" || $("#frequencyIntInput").val() === "") {
+            $("#frequencyLabel").css({
+                "color" : "rgb(252, 105, 7)",
+            });
             return;
         }
         else {
-            $("#frequencyLabel").css("color", "black");
+            $("#frequencyLabel").css("color", "rgb(240, 240, 14)");
             tollTallyApp.frequencyIntInputVar = $("#frequencyIntInput").val().trim();
             tollTallyApp.frequencyTypeInputVar = $("#frequencyTypeInput").val().trim();
             console.log(tollTallyApp.frequencyIntInputVar);
@@ -71,12 +76,14 @@ let tollTallyApp = {
 
     // total per input field related methods
     durationInput: function () {
-        if ($("#durationIntInput").val() === "" || $("#durationTypeInput").val() === "") {
-            $("#durationLabel").css("color", "red");
+        if ($("#durationIntInput").val() === "" || $("#durationTypeInput").val() === "" || $("#durationIntInput").val() === "") {
+            $("#durationLabel").css({
+                "color" : "rgb(252, 105, 7)",
+            });
             return;
         }
         else {
-            $("#durationLabel").css("color", "black");
+            $("#durationLabel").css("color", "rgb(240, 240, 14)");
             tollTallyApp.durationIntInputVar = $("#durationIntInput").val().trim();
             tollTallyApp.durationTypeInputVar = $("#durationTypeInput").val().trim();
             console.log(tollTallyApp.durationIntInputVar);
@@ -86,19 +93,46 @@ let tollTallyApp = {
 
     // gmaps key AIzaSyAX-zoE2bM43iSCFsZHCgdzog3iQ31u04k
 
-    tollGuruAPI : function () {
-        $.ajax({
-            url: "https://dev.tollguru.com/v1/calc/gmaps",
-            method: "POST",
-            dataType: "json",
-            headers: "{'x-api-key': 'WKovB7gOJC47zEomeAr3l7fQRRamCWAb6Ski8tIo'}",
-            success: function(data) {
-                console.log(data);
-            }
+    // tollGuruAPI : function () {
+    //     $.ajax({
+    //         url: "https://dev.tollguru.com/v1/calc/gmaps",
+    //         headers: { "x-api-key": "WKovB7gOJC47zEomeAr3l7fQRRamCWAb6Ski8tIo" },
+    //         data: {
+    //             "from": {
+    //               "address": "Main str, Dallas, TX"
+    //             },
+    //             "to": {
+    //               "address": "Addison, TX"
+    //             }
+    //         },
+    //         method: "POST",
+    //         dataType: "json",
+    //         // headers: {
+    //         //     "x-api-key": "WKovB7gOJC47zEomeAr3l7fQRRamCWAb6Ski8tIo",
+    //         //     //"Access-Control-Allow-Origin": "http://localhost:52330",
+    //         //     // "Access-Control-Allow-Credentials": "true",
+    //         //     // "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS",
+    //         //     // "Access-Control-Allow-Headers": "Origin, X-Requested-With, Content-Type, Accept, Authorization",
+    //         //     // "Access-Control-Expose-Headers": "Authorization"
+    //         // },
+    //         success: function(data) {
+    //             console.log(data);
+    //             alert("success");
+    //         },
+    //         // error: function(data) {
+    //         //     console.log(data);
+    //         // },
+    //         beforeSend: function (xhr) {
+    //             xhr.setRequestHeader ("Authorization", "Basic " + btoa("WKovB7gOJC47zEomeAr3l7fQRRamCWAb6Ski8tIo"));
+    //             console.log(xhr);
+    //         }
             
-        });
-    },
+    //     });
+    // },
 
+    dummyCalculator : function () {
+
+    },
 
 
     // initialize the geocoder library
@@ -184,16 +218,13 @@ let tollTallyApp = {
             }).then(function () {
                 tollTallyApp.initNavigateMap("map", "panel-direction", geoAddress[0].latitude, geoAddress[0].longitude, geoAddress[1].latitude, geoAddress[1].longitude);
             });
-        } else {
-            // replace with modal ***
-            alert("Please enter both addresses");
-        }
+        } 
     },
 }
 
 
 tollTallyApp.initialize();
-tollTallyApp.tollGuruAPI();
+
 
 
 

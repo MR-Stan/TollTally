@@ -5,35 +5,73 @@ body {
     background-size: cover;
 }
 
-header {
-    background-image: url("../images/TollTally\ Logo.png");
-    background-position: center;
-    background-repeat: no-repeat;
-    background-color: rgb(47,81,255);
-    height: 12%;
-    border-bottom: 0.5px solid black;
+#logo {
+    opacity: 0.95;
+    border-radius: 90%;
+    width: 20%;
+    margin-top: 2%;
 }
 
-form {
-    background-color: whitesmoke;
-    width: 70%;
-    margin: 2% auto;
-    border: 0.5px solid black;
+.card {
+    background-color: rgb(47,81,255, 0.85);
+    color: rgb(240, 240, 14);
+    font-size: 1.3em;
+    margin-top: 5%;
+    border-radius: 25px;
+    text-align: center;
 }
 
-footer {
-
+.card-title {
+    width: 80%;
+    font-size: 0.9em;
+    margin: 2% auto 0 auto;
+    color: white;
 }
+
 .btn {
-    background-color: rgb(47,81,255);
     margin: 1% auto 1% 5%;
+    background-color: rgb(240, 240, 14);
+    color: rgb(252, 105, 7);
+    font-weight: bold;
 }
 
 .form-control {
     width: 90%;
     margin: auto;
+
 }
 
-.formLabel, .form-text {
-    margin: 1% auto 0 5%;
+#locationNote {
+    color: whitesmoke;
+}
+
+
+#frequencyTypeInput, #durationTypeInput {
+    color: black;
+}
+
+hr {
+    width: 90%;
+    border: 0.75px solid rgb(240, 240, 14);
+
+}
+
+select,
+select option {
+  color: #000000;
+}
+
+select:invalid,
+select option[value=""] {
+  color: #999999 !important;
+}
+
+label {
+  display: block;
+  margin: 16px 0;
+}
+
+/*Added for browser compatibility*/
+[hidden] {
+  display: none;
 }
