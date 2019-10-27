@@ -18,7 +18,6 @@ body {
     font-size: 1.3em;
     margin-top: 5%;
     border-radius: 25px;
-    text-align: center;
 }
 
 .card-title {
@@ -33,6 +32,13 @@ body {
     background-color: rgb(240, 240, 14);
     color: rgb(252, 105, 7);
     font-weight: bold;
+    font-size: 1em;
+    margin: 1% auto 3% 5%;
+}
+
+.btn:hover {
+    background-color: rgb(252, 105, 7);
+    color: rgb(240, 240, 14);
 }
 
 .form-control {
@@ -41,13 +47,21 @@ body {
 
 }
 
-#locationNote {
-    color: whitesmoke;
+.formLabel {
+    margin: 0 0 0 5%;
 }
 
+#locationNote {
+    color: whitesmoke;
+    margin-left: 5%;
+}
 
 #frequencyTypeInput, #durationTypeInput {
-    color: black;
+    width: 49.5%;
+}
+
+#frequencyIntInput, #durationIntInput {
+    width: 40%;
 }
 
 hr {
@@ -74,4 +88,20 @@ label {
 /*Added for browser compatibility*/
 [hidden] {
   display: none;
+}
+
+#alignCenter {
+    text-align: center;
+}
+
+#frequencyIntInput, #frequencyTypeInput {
+    display: inline-block;
+} 
+
+#durationIntInput, #durationTypeInput {
+    display: inline-block;
+}
+
+#durationIntInput, #frequencyIntInput {
+    margin-left: 5%;
 }

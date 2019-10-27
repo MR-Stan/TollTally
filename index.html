@@ -18,20 +18,22 @@
         <!-- holds initial form that the user enters information into -->
         <div id="inputContainer" class="container">
             <div class="card"> 
-                <img src="assets/images/TollTally Logo.png" class="card-img-top" id="logo">      
-                <h5 class="card-title">Calculate and predict your routinely 
-                    transportation expenses within the Dallas-Fort Worth area. 
-                    Get a hold of your finances by getting the big picture of 
-                    your commute costs. While you work hard for your money, 
-                    you can leave the guesswork of you toll expenditures to 
-                    TollTally!</h5>     
-                    <hr>      
+                <div id="alignCenter">
+                    <img src="assets/images/TollTally Logo.png" class="card-img-top" id="logo">      
+                    <h5 class="card-title">Calculate and predict your routinely 
+                        transportation expenses within the Dallas-Fort Worth area. 
+                        Get a hold of your finances by getting the big picture of 
+                        your commute costs. While you work hard for your money, 
+                        you can leave the guesswork of you toll expenditures to 
+                        TollTally!</h5>     
+                    <hr>   
+                </div>   
                 <div class="card-body">
                     <!-- Origin (starting location) input field -->
                     <div class="form-group"n id="formOrigin">
                         <label class="formLabel" for="originInput" id='originLabel'">Starting Location:</label>
                         <input type="text" class="form-control" id="originInput" aria-describedby="locationHelp" placeholder="Enter starting location">
-                        <small id="locationNote" class="form-text text-muted">We'll never share your location with anyone else.</small>
+                        <small id="locationNote" class="form-text text-muted">*We'll never share your location with anyone else.</small>
                     </div>
 
                     <!-- Destination (ending location) input field -->
@@ -43,7 +45,7 @@
                     <!-- Frequency input field -->
                     <div class="form-group" id="formFrequency">
                         <label class="formLabel" for="frequencyInput" id="frequencyLabel">Trip Frequency:</label>
-                        <input type="text" class="form-control" id="frequencyIntInput" placeholder="Enter number of trips">
+                        <input type="text" class="form-control" id="frequencyIntInput" placeholder="Enter number of trips per selected period">
                         <select required id="frequencyTypeInput" class="form-control">
                             <option value="" selected disabled hidden>Select period</option>
                             <option value="day">Day</option>
@@ -56,7 +58,7 @@
                     <!-- Duration input field -->
                     <div class="form-group" id="formDuration">
                         <label class="formLabel" for="durationInput" id='durationLabel'>Frequency Duration:</label>
-                        <input type="text" class="form-control" id="durationIntInput" placeholder="Enter duration to calculate for">
+                        <input type="text" class="form-control" id="durationIntInput" placeholder="Enter number of periods to calculate for">
                         <select required id="durationTypeInput" class="form-control">
                             <option value="" selected disabled hidden>Select period</option>
                             <option value="days">Days</option>
@@ -65,7 +67,7 @@
                             <option value="years">Years</option>
                         </select>
                     </div>
-                    <button id="submitButton" type="button" class="btn btn-primary">Submit</button>
+                    <button id="submitButton" type="button" class="btn btn-primary">Calculate</button>
                 </div>
             </div>
 
