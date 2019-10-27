@@ -9,21 +9,31 @@ let tollTallyApp = {
 
     frequencyTypeInputVar: "",
 
-    destinationIntInputVar: "",
+    durationIntInputVar: "",
 
-    destinationTypeInputVar: "",
+    durationTypeInputVar: "",
+
+    entryChecker : 0,
 
     // function that intially runs
     initialize: function () {
-
-        $("#submitButton").click(function () {
+        tollTallyApp.autocompleteAPI();
+        $("#resultContainer").hide();
+        $("#google").hide();
+        $("#calculateButton").click(function () {
+            tollTallyApp.entryChecker = 0;
             tollTallyApp.originInput();
             tollTallyApp.destinationInput();
             tollTallyApp.frequencyInput();
             tollTallyApp.durationInput();
-            tollTallyApp.getGeolocationData();
-            // $("#inputContainer").hide();
-            // $("#calculationContainer").show();
+            // checking all fields
+            if (tollTallyApp.entryChecker < 4) {
+                return;
+            }
+            else {
+                tollTallyApp.dummyCalculator();
+            }
+
         });
     },
 
@@ -38,7 +48,7 @@ let tollTallyApp = {
         else {
             $("#originLabel").css("color", "rgb(240, 240, 14)");
             tollTallyApp.originInputVar = $("#originInput").val().trim();
-            console.log(tollTallyApp.originInputVar);
+            tollTallyApp.entryChecker++;
         }
     },
 
@@ -53,13 +63,13 @@ let tollTallyApp = {
         else {
             $("#destinationLabel").css("color", "rgb(240, 240, 14)");
             tollTallyApp.destinationInputVar = $("#destinationInput").val().trim();
-            console.log(tollTallyApp.destinationInputVar);
+            tollTallyApp.entryChecker++;
         }
     },
 
     // frequency input field related methods
     frequencyInput: function () {
-        if ($("#frequencyIntInput").val() === "" || $("#frequencyTypeInput").val() === "" || $("#frequencyIntInput").val() === "") {
+        if ($("#frequencyIntInput").val() === "" || $("#frequencyTypeInput").val() === "") {
             $("#frequencyLabel").css({
                 "color" : "rgb(252, 105, 7)",
             });
@@ -69,14 +79,13 @@ let tollTallyApp = {
             $("#frequencyLabel").css("color", "rgb(240, 240, 14)");
             tollTallyApp.frequencyIntInputVar = $("#frequencyIntInput").val().trim();
             tollTallyApp.frequencyTypeInputVar = $("#frequencyTypeInput").val().trim();
-            console.log(tollTallyApp.frequencyIntInputVar);
-            console.log(tollTallyApp.frequencyTypeInputVar);
+            tollTallyApp.entryChecker++;
         }
     },
 
     // total per input field related methods
     durationInput: function () {
-        if ($("#durationIntInput").val() === "" || $("#durationTypeInput").val() === "" || $("#durationIntInput").val() === "") {
+        if ($("#durationIntInput").val() === "" || $("#durationTypeInput").val() === "") {
             $("#durationLabel").css({
                 "color" : "rgb(252, 105, 7)",
             });
@@ -86,8 +95,7 @@ let tollTallyApp = {
             $("#durationLabel").css("color", "rgb(240, 240, 14)");
             tollTallyApp.durationIntInputVar = $("#durationIntInput").val().trim();
             tollTallyApp.durationTypeInputVar = $("#durationTypeInput").val().trim();
-            console.log(tollTallyApp.durationIntInputVar);
-            console.log(tollTallyApp.durationTypeInputVar);
+            tollTallyApp.entryChecker++;
         }
     },
 
@@ -131,7 +139,17 @@ let tollTallyApp = {
     // },
 
     dummyCalculator : function () {
-
+        $("#inputContainer").hide();
+        $("#resultContainer").show();
+        $("#confirm").text("Your trip from " + tollTallyApp.originInputVar + " to " + tollTallyApp.destinationInputVar +
+         " was calculated as " + tollTallyApp.frequencyIntInputVar + " trips per " + tollTallyApp.frequencyTypeInputVar + 
+         " for " + tollTallyApp.durationIntInputVar + " " + tollTallyApp.durationTypeInputVar + ".");
+    
+        $("#showDirectionsButton").click(function () { 
+            tollTallyApp.getGeolocationData();
+            $("#google").show();
+            $("#showDirectionsButton").hide();
+        });
     },
 
 
@@ -147,7 +165,6 @@ let tollTallyApp = {
         var directionsService = new google.maps.DirectionsService;
 
         // initialize the map
-        // update to jquery ***
         var map = new google.maps.Map(document.getElementById(mapID), {
             zoom: 7,
             center: { lat: startLatitude, lng: startLongitude }
@@ -156,7 +173,6 @@ let tollTallyApp = {
         // clear the direction panel
         $("#" + panelDirectionID).html("");
         directionsDisplay.setMap(map);
-        // update to jquery ***
         directionsDisplay.setPanel(document.getElementById(panelDirectionID));
 
         //prepare the latitude and longitude data
@@ -172,13 +188,12 @@ let tollTallyApp = {
             destination: end,
             travelMode: 'DRIVING'
         }, function (response, status) {
-            console.log(response);           
+            //console.log(response);           
             if (status === 'OK') {
                 directionsDisplay.setDirections(response);
             } 
             else {
-                // replace with modal ***
-                alert('Directions request failed due to ' + status);
+                console.log('Directions request failed due to ' + status);
             }
         });
     },
@@ -220,7 +235,30 @@ let tollTallyApp = {
             });
         } 
     },
+
+    autocompleteAPI : function () {
+        let inputs = document.getElementsByClassName('query');
+        let options = {types: []};
+    
+        let autocompletes = [];
+    
+        for (let i = 0; i < inputs.length; i++) {
+        let autocomplete = new google.maps.places.Autocomplete(inputs[i], options);
+        autocomplete.inputId = inputs[i].id;
+        autocomplete.addListener('place_changed', fillIn);
+        autocompletes.push(autocomplete);
+        }
+    
+        function fillIn() {
+        console.log(this.inputId);
+        let place = this.getPlace();
+        console.log(place. address_components[0].long_name);
+        }
+    },
+
 }
+
+
 
 
 tollTallyApp.initialize();

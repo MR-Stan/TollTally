@@ -8,7 +8,7 @@
         <!-- MomentJS -->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.1/moment.min.js"></script>
         <!-- Google Maps API -->
-        <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAX-zoE2bM43iSCFsZHCgdzog3iQ31u04k"></script>
+        <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAX-zoE2bM43iSCFsZHCgdzog3iQ31u04k&libraries=places"></script>
         <!-- Bootstrap -->
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
         <!-- Local CSS -->
@@ -30,16 +30,16 @@
                 </div>   
                 <div class="card-body">
                     <!-- Origin (starting location) input field -->
-                    <div class="form-group"n id="formOrigin">
+                    <div class="form-group" id="formOrigin">
                         <label class="formLabel" for="originInput" id='originLabel'">Starting Location:</label>
-                        <input type="text" class="form-control" id="originInput" aria-describedby="locationHelp" placeholder="Enter starting location">
+                        <input type="text" class="form-control query" id="originInput" aria-describedby="locationHelp" placeholder="Enter starting location">
                         <small id="locationNote" class="form-text text-muted">*We'll never share your location with anyone else.</small>
                     </div>
 
                     <!-- Destination (ending location) input field -->
                     <div class="form-group" id="formDestination">
                         <label class="formLabel" for="destinationInput" id='destinationLabel'>Ending Location:</label>
-                        <input type="text" class="form-control" id="destinationInput" placeholder="Enter ending location">
+                        <input type="text" class="form-control query" id="destinationInput" placeholder="Enter ending location">
                     </div>
 
                     <!-- Frequency input field -->
@@ -67,31 +67,32 @@
                             <option value="years">Years</option>
                         </select>
                     </div>
-                    <button id="submitButton" type="button" class="btn btn-primary">Calculate</button>
+                    <button id="calculateButton" type="button" class="btn btn-primary">Calculate</button>
                 </div>
             </div>
-
-            <table class="tbl-map">
-                <tr>
-                    <td><div id="map"></div></td>
-                    <td><div id="panel-direction"></div></td>
-                </tr>
-            </table>
-
-        </div>
-
-
-        <!-- holds the form that's shown while calculating -->
-        <div id="calculationContainer">
-
         </div>
 
         <!-- holds the post calculation / result form -->
-        <div id="resultContainer">
-
+        <div id="resultContainer" class="container">
+            <div class="card">
+                <div class="card-body">
+                    <div id="alignCenter">
+                        <img src="assets/images/TollTally Logo.png" class="card-img-top" id="logo">      
+                        <hr>   
+                    </div> 
+                    <div id="confirm"></div>
+                    <button id="showDirectionsButton" type="button" class="btn btn-primary">Show Directions</button>
+                    <div id="google">
+                        <table class="tbl-map">
+                            <tr>
+                                <td><div id="map"></div></td>
+                                <td><div id="panel-direction"></div></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
         </div>
-
-
 
         <!-- JQuery -->
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
