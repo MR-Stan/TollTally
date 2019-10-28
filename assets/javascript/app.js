@@ -1,20 +1,28 @@
 
 let tollTallyApp = {
 
+    // holds the info from originInput (origin text input)
     originInputVar: "",
 
+    // holds the info from destinationInput (destination text input)
     destinationInputVar: "",
 
+    // holds the info from frequencyIntInput (frequency integer text input)
     frequencyIntInputVar: "",
 
+    // holds the info from frequencyTypeInput (frequency type (period) dropdown)
     frequencyTypeInputVar: "",
 
+    // holds the info from durationIntInput (duration integer text input)
     durationIntInputVar: "",
 
+    // holds the info from durationTypeInput (duration type (period) dropdown)
     durationTypeInputVar: "",
 
+    // used for data validation
     entryChecker : 0,
 
+    // object returned from google maps
     responseObject : {},
 
     // function that intially runs
@@ -36,15 +44,15 @@ let tollTallyApp = {
                 tollTallyApp.getResults();
                 tollTallyApp.getGeolocationData();
             }
-
         });
     },
 
+    // lazy reset, just reloads the page
     reloadPage : function () {
         window.location.reload();
     },
 
-    // origin input field related methods
+    // origin input field validation
     originInput: function () {
         if ($("#originInput").val() === "") {
             $("#originLabel").css({
@@ -60,7 +68,7 @@ let tollTallyApp = {
         }
     },
 
-    // destination input field related methods
+    // destination input field validation
     destinationInput: function () {
         if ($("#destinationInput").val() === "") {
             $("#destinationLabel").css({
@@ -76,7 +84,7 @@ let tollTallyApp = {
         }
     },
 
-    // frequency input field related methods
+    // frequency input field validation
     frequencyInput: function () {
         if ($("#frequencyIntInput").val() === "" || $("#frequencyTypeInput").val() === "") {
             $("#frequencyLabel").css({
@@ -93,7 +101,7 @@ let tollTallyApp = {
         }
     },
 
-    // total per input field related methods
+    // duration input field validation
     durationInput: function () {
         if ($("#durationIntInput").val() === "" || $("#durationTypeInput").val() === "") {
             $("#durationLabel").css({
@@ -110,8 +118,170 @@ let tollTallyApp = {
         }
     },
 
-    // gmaps key AIzaSyAX-zoE2bM43iSCFsZHCgdzog3iQ31u04k
+    getResults : function () {
+        $("#inputContainer").hide();
+        $("#resultContainer").show();
+        $("#confirm").text("Your trip from " + tollTallyApp.originInputVar + " to " + tollTallyApp.destinationInputVar +
+         " was calculated as " + tollTallyApp.frequencyIntInputVar + " trips per " + tollTallyApp.frequencyTypeInputVar + 
+         " for " + tollTallyApp.durationIntInputVar + " " + tollTallyApp.durationTypeInputVar + ".");
+        $("#google").show();
+        $("#panel-direction").hide();
+        // calculate tolls
+        $("#calculateButton").click(function () { 
+            tollTallyApp.calculateTolls();
+            $("#calculateButton").hide();
+        });
 
+        // reload page
+        $("#resetButton").click(function () { 
+            tollTallyApp.reloadPage();
+        });
+
+        // show directions
+        $("#showDirectionsButton").click(function () { 
+            $("#panel-direction").show();
+            $("#showDirectionsButton").hide();
+        });
+    },
+
+    // finds the total distance driven on toll roads
+    calculateTolls : function () {
+        let str = "";
+        let totalDistance = tollTallyApp.responseObject.routes[0].legs[0].distance.value;
+        let roadDistance = totalDistance;
+        
+        // removes HTML tags from string being queried
+        function containsWord(str, searchValue){
+            let words = str.replace(/<\/?[^>]+(>|$)/g, "");
+            return words.indexOf(searchValue) > -1
+          }
+                                                
+        // for each string (direction) given by google, return true if it contains the word 'toll'
+        for (let i = 0; i < tollTallyApp.responseObject.routes[0].legs[0].steps.length; i++ ) {
+            str = tollTallyApp.responseObject.routes[0].legs[0].steps[i].instructions.toLowerCase();
+            if (containsWord(str, "toll") != true) {
+            }
+            else {
+                roadDistance = roadDistance - tollTallyApp.responseObject.routes[0].legs[0].steps[i].distance.value;
+            }
+        }
+        let tollDistance = totalDistance - roadDistance;
+
+        let tollDistMiles = parseInt(tollDistance) / 1609.34;
+        console.log(tollDistMiles);
+    },
+
+    // google stuff from here down 
+    // <('.' )> <( '.' )> <( '.')> <('.' )> <( '.' )> <( '.')> <('.' )> <( '.' )> <( '.')> <('.' )> <( '.' )> <( '.')><('.' )> <( '.' )> <( '.')> <('.' )> <( '.' )> <( '.')> 
+    // initialize the geocoder library
+    geocoder : new google.maps.Geocoder(),
+
+    // array to hold the geo address
+    geoAddress : [], 
+
+
+    initNavigateMap: function (mapID, panelDirectionID, startLatitude, startLongitude, endLatitude, endLongitude) {
+        var directionsDisplay = new google.maps.DirectionsRenderer({
+            preserveViewport: true
+        });
+        var directionsService = new google.maps.DirectionsService;
+
+        // initialize the map
+        var map = new google.maps.Map(document.getElementById(mapID), {
+            zoom: 10,
+            center: { lat: startLatitude, lng: startLongitude }
+        });
+
+        // clear the direction panel
+        $("#" + panelDirectionID).html("");
+        directionsDisplay.setMap(map);
+        directionsDisplay.setPanel(document.getElementById(panelDirectionID));
+
+        //prepare the latitude and longitude data
+        start = startLatitude + ", " + startLongitude;
+        end = endLatitude + ", " + endLongitude;
+        tollTallyApp.calculateAndDisplayRoute(directionsService, directionsDisplay, start, end);
+    },
+
+    // function to get the driving route
+    calculateAndDisplayRoute: function (directionsService, directionsDisplay, start, end) {
+        directionsService.route({
+            origin: start,
+            destination: end,
+            travelMode: 'DRIVING'
+        }, function (response, status) {
+            tollTallyApp.responseObject = response;       
+            if (status === 'OK') {
+                directionsDisplay.setDirections(response);
+            } 
+            else {
+                console.log('Directions request failed due to ' + status);
+            }
+        });
+    },
+
+    // get geolocation based on address
+    codeAddress: function (address) {
+        return new Promise(function (resolve, reject) {
+            tollTallyApp.geocoder.geocode({ 'address': address }, function (results, status) {
+                if (status == google.maps.GeocoderStatus.OK) {
+                    resolve(results);
+                } else {
+                    reject(Error("Geocode for address " + address + " was not successful for the following reason: " + status));
+                }
+            });
+        });
+    },
+
+    // function to get geolocation of both (origin and destination) addresses
+    getGeolocationData: function () {
+        if ($("#originInput").val() != "" && $("#destinationInput").val() != "") {
+            geoAddress = [];
+            tollTallyApp.codeAddress($("#originInput").val()).then(function (response) {
+                var geoData = {
+                    latitude: response[0].geometry.location.lat(),
+                    longitude: response[0].geometry.location.lng()
+                }
+                geoAddress.push(geoData);
+            }).then(function () {
+                return tollTallyApp.codeAddress($("#destinationInput").val()).then(function (response) {
+                    var geoData2 = {
+                        latitude: response[0].geometry.location.lat(),
+                        longitude: response[0].geometry.location.lng()
+                    }
+                    geoAddress.push(geoData2);
+                });
+
+            }).then(function () {
+                tollTallyApp.initNavigateMap("map", "panel-direction", geoAddress[0].latitude, geoAddress[0].longitude, geoAddress[1].latitude, geoAddress[1].longitude);
+            });
+        } 
+    },
+
+    // google autocomplete for origin and destination fields
+    autocompleteAPI : function () {
+        let inputs = document.getElementsByClassName('query');
+        let options = {types: []};
+        let autocompletes = [];
+    
+        for (let i = 0; i < inputs.length; i++) {
+            let autocomplete = new google.maps.places.Autocomplete(inputs[i], options);
+            autocomplete.inputId = inputs[i].id;
+            autocomplete.addListener('place_changed', fillIn);
+            autocompletes.push(autocomplete);
+        }
+    
+        function fillIn() {
+            //console.log(this.inputId);
+            let place = this.getPlace();
+            //console.log(place. address_components[0].long_name);
+        }
+    },
+}
+
+tollTallyApp.initialize();
+
+    // couldn't get the TollGuru API to work with AJAX (uses nodeJS) :(
     // tollGuruAPI : function () {
     //     $.ajax({
     //         url: "https://dev.tollguru.com/v1/calc/gmaps",
@@ -149,173 +319,8 @@ let tollTallyApp = {
     //     });
     // },
 
-    getResults : function () {
-        $("#inputContainer").hide();
-        $("#resultContainer").show();
-        $("#confirm").text("Your trip from " + tollTallyApp.originInputVar + " to " + tollTallyApp.destinationInputVar +
-         " was calculated as " + tollTallyApp.frequencyIntInputVar + " trips per " + tollTallyApp.frequencyTypeInputVar + 
-         " for " + tollTallyApp.durationIntInputVar + " " + tollTallyApp.durationTypeInputVar + ".");
-        $("#google").show();
-        $("#panel-direction").hide();
-        // calculate tolls
-        $("#calculateButton").click(function () { 
-            tollTallyApp.countTolls();
-        });
-
-        // reload page
-        $("#resetButton").click(function () { 
-            tollTallyApp.reloadPage();
-        });
-
-        // show directions
-        $("#showDirectionsButton").click(function () { 
-            $("#panel-direction").show();
-            $("#showDirectionsButton").hide();
-        });
-    },
-
-    calculateTolls : function () {
-
-    },
 
 
-    // initialize the geocoder library
-    geocoder : new google.maps.Geocoder(),
-
-    //array to hold the geo address
-    geoAddress : [], 
-
-
-    initNavigateMap: function (mapID, panelDirectionID, startLatitude, startLongitude, endLatitude, endLongitude) {
-        var directionsDisplay = new google.maps.DirectionsRenderer({
-            preserveViewport: true
-        });
-        var directionsService = new google.maps.DirectionsService;
-
-        // initialize the map
-        var map = new google.maps.Map(document.getElementById(mapID), {
-            zoom: 10,
-            center: { lat: startLatitude, lng: startLongitude }
-        });
-
-        // clear the direction panel
-        $("#" + panelDirectionID).html("");
-        directionsDisplay.setMap(map);
-        directionsDisplay.setPanel(document.getElementById(panelDirectionID));
-
-        //prepare the latitude and longitude data
-        start = startLatitude + ", " + startLongitude;
-        end = endLatitude + ", " + endLongitude;
-        tollTallyApp.calculateAndDisplayRoute(directionsService, directionsDisplay, start, end);
-    },
-
-    //function to get the driving route
-    calculateAndDisplayRoute: function (directionsService, directionsDisplay, start, end) {
-        directionsService.route({
-            origin: start,
-            destination: end,
-            travelMode: 'DRIVING'
-        }, function (response, status) {
-            tollTallyApp.responseObject = response;       
-            if (status === 'OK') {
-                directionsDisplay.setDirections(response);
-            } 
-            else {
-                console.log('Directions request failed due to ' + status);
-            }
-        });
-    },
-
-    //get geolocation based on address
-    codeAddress: function (address) {
-        return new Promise(function (resolve, reject) {
-            tollTallyApp.geocoder.geocode({ 'address': address }, function (results, status) {
-                if (status == google.maps.GeocoderStatus.OK) {
-                    resolve(results);
-                } else {
-                    reject(Error("Geocode for address " + address + " was not successful for the following reason: " + status));
-                }
-            });
-        });
-    },
-
-    //function to get geolocation of both addresses.
-    getGeolocationData: function () {
-        if ($("#originInput").val() != "" && $("#destinationInput").val() != "") {
-            geoAddress = [];
-            tollTallyApp.codeAddress($("#originInput").val()).then(function (response) {
-                var geoData = {
-                    latitude: response[0].geometry.location.lat(),
-                    longitude: response[0].geometry.location.lng()
-                }
-                geoAddress.push(geoData);
-            }).then(function () {
-                return tollTallyApp.codeAddress($("#destinationInput").val()).then(function (response) {
-                    var geoData2 = {
-                        latitude: response[0].geometry.location.lat(),
-                        longitude: response[0].geometry.location.lng()
-                    }
-                    geoAddress.push(geoData2);
-                });
-
-            }).then(function () {
-                tollTallyApp.initNavigateMap("map", "panel-direction", geoAddress[0].latitude, geoAddress[0].longitude, geoAddress[1].latitude, geoAddress[1].longitude);
-            });
-        } 
-    },
-
-    autocompleteAPI : function () {
-        let inputs = document.getElementsByClassName('query');
-        let options = {types: []};
-        let autocompletes = [];
-    
-        for (let i = 0; i < inputs.length; i++) {
-            let autocomplete = new google.maps.places.Autocomplete(inputs[i], options);
-            autocomplete.inputId = inputs[i].id;
-            autocomplete.addListener('place_changed', fillIn);
-            autocompletes.push(autocomplete);
-        }
-    
-        function fillIn() {
-            //console.log(this.inputId);
-            let place = this.getPlace();
-            //console.log(place. address_components[0].long_name);
-        }
-    },
-
-    countTolls : function () {
-        let str = "";
-        let totalDistance = tollTallyApp.responseObject.routes[0].legs[0].distance.value;
-        let roadDistance = totalDistance;
-        
-        function containsWord(str, searchValue){
-            let words = str.replace(/<\/?[^>]+(>|$)/g, "");
-            return words.indexOf(searchValue) > -1
-          }
-
-
-        // function containsWord(str, word) {
-        //     return str.match(new RegExp("\\b" + word + "\\b")) != null;
-        // }
-
-        for (let i = 0; i < tollTallyApp.responseObject.routes[0].legs[0].steps.length; i++ ) {
-            str = tollTallyApp.responseObject.routes[0].legs[0].steps[i].instructions.toLowerCase();
-            if (containsWord(str, "toll") != true) {
-            }
-            else {
-                roadDistance = roadDistance - tollTallyApp.responseObject.routes[0].legs[0].steps[i].distance.value;
-            }
-        }
-
-        let tollDistance = totalDistance - roadDistance;
-
-    console.log(totalDistance);
-    console.log(roadDistance);
-    console.log(tollDistance);
-    } 
-}
-
-tollTallyApp.initialize();
 
 
 
