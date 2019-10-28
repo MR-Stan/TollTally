@@ -104,7 +104,7 @@ label {
     margin-left: 5%;
 }
 
-#confirm {
+#confirm, #calculated {
     width: 90%;
     text-align: center;
 }

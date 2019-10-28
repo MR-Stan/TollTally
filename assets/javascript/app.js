@@ -13,17 +13,25 @@ let tollTallyApp = {
     // holds the info from frequencyTypeInput (frequency type (period) dropdown)
     frequencyTypeInputVar: "",
 
+    // frequencyIntInputVar converted based on frequencyTypeInputVar
+    frequencyInteger : 0,
+
     // holds the info from durationIntInput (duration integer text input)
     durationIntInputVar: "",
 
     // holds the info from durationTypeInput (duration type (period) dropdown)
     durationTypeInputVar: "",
 
+    // durationIntInputVar convered based on durationTypeInputVar
+    durationInteger : 0,
+
     // used for data validation
     entryChecker : 0,
 
     // object returned from google maps
     responseObject : {},
+
+    tollSum : 0,
 
     // function that intially runs
     initialize: function () {
@@ -97,6 +105,17 @@ let tollTallyApp = {
             $("#frequencyLabel").css("color", "rgb(240, 240, 14)");
             tollTallyApp.frequencyIntInputVar = $("#frequencyIntInput").val().trim();
             tollTallyApp.frequencyTypeInputVar = $("#frequencyTypeInput").val().trim();
+            // convert frequency to days
+            if (tollTallyApp.frequencyTypeInputVar === "week") {
+                tollTallyApp.frequencyInteger = parseInt(tollTallyApp.frequencyIntInputVar) / 7;
+            }
+            // needs switch statement for each month or split by 28,29,30,31 days
+            else if (tollTallyApp.frequencyTypeInputVar === "month") {
+                tollTallyApp.frequencyInteger = parseInt(tollTallyApp.frequencyIntInputVar) / 30;
+            }
+            else if (tollTallyApp.frequencyTypeInputVar === "year") {
+                tollTallyApp.frequencyInteger = parseInt(tollTallyApp.frequencyIntInputVar) / 365;
+            }
             tollTallyApp.entryChecker++;
         }
     },
@@ -114,6 +133,17 @@ let tollTallyApp = {
             $("#durationLabel").css("color", "rgb(240, 240, 14)");
             tollTallyApp.durationIntInputVar = $("#durationIntInput").val().trim();
             tollTallyApp.durationTypeInputVar = $("#durationTypeInput").val().trim();
+            // convert non-day options to days
+            if (tollTallyApp.durationTypeInputVar === "weeks") {
+                tollTallyApp.durationInteger = parseInt(tollTallyApp.durationIntInputVar) * 7;
+            }
+            // needs switch statement for each month or split by 28,29,30,31 days
+            else if (tollTallyApp.durationTypeInputVar === "months") {
+                tollTallyApp.durationInteger = parseInt(tollTallyApp.durationIntInputVar) * 30;
+            }
+            else if (tollTallyApp.durationTypeInputVar === "years") {
+                tollTallyApp.durationInteger = parseInt(tollTallyApp.durationIntInputVar) * 365;
+            }
             tollTallyApp.entryChecker++;
         }
     },
@@ -165,10 +195,25 @@ let tollTallyApp = {
                 roadDistance = roadDistance - tollTallyApp.responseObject.routes[0].legs[0].steps[i].distance.value;
             }
         }
+        // toll distance = total trip distance - distance of instructions not containing the word 'toll'
         let tollDistance = totalDistance - roadDistance;
 
+        // converting from tollDistance (meters) tollDistMiles (miles)
         let tollDistMiles = parseInt(tollDistance) / 1609.34;
-        console.log(tollDistMiles);
+        
+        // toll cost average $0.38 / mile
+        let cost = 0.38;
+
+        // single trip cost (in $dolladollabillsyo$)
+        let singleTrip = tollDistMiles * cost;
+
+        let totalCost = singleTrip * tollTallyApp.frequencyInteger * tollTallyApp.durationInteger;
+
+        tollTallyApp.tollSum = totalCost.toFixed(2);
+
+        console.log(totalCost);
+
+        $("#calculated").text("Your total cost is: $" + tollTallyApp.tollSum).css("color", "rgb(252, 105, 7)");
     },
 
     // google stuff from here down 
