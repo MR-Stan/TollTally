@@ -15,11 +15,13 @@ let tollTallyApp = {
 
     entryChecker : 0,
 
+    responseObject : {},
+
     // function that intially runs
     initialize: function () {
-        tollTallyApp.autocompleteAPI();
         $("#resultContainer").hide();
         $("#google").hide();
+        tollTallyApp.autocompleteAPI();
         $("#submitButton").click(function () {
             tollTallyApp.entryChecker = 0;
             tollTallyApp.originInput();
@@ -31,22 +33,23 @@ let tollTallyApp = {
                 return;
             }
             else {
-                tollTallyApp.dummyCalculator();
+                tollTallyApp.getResults();
                 tollTallyApp.getGeolocationData();
             }
 
         });
     },
 
-    reloadPage : function (){
+    reloadPage : function () {
         window.location.reload();
-     },
+    },
 
     // origin input field related methods
     originInput: function () {
         if ($("#originInput").val() === "") {
             $("#originLabel").css({
                 "color" : "rgb(252, 105, 7)",
+                // add shake animation
             });
             return;
         }
@@ -62,6 +65,7 @@ let tollTallyApp = {
         if ($("#destinationInput").val() === "") {
             $("#destinationLabel").css({
                 "color" : "rgb(252, 105, 7)",
+                // add shake animation
             });
             return;
         }
@@ -77,6 +81,7 @@ let tollTallyApp = {
         if ($("#frequencyIntInput").val() === "" || $("#frequencyTypeInput").val() === "") {
             $("#frequencyLabel").css({
                 "color" : "rgb(252, 105, 7)",
+                // add shake animation
             });
             return;
         }
@@ -93,6 +98,7 @@ let tollTallyApp = {
         if ($("#durationIntInput").val() === "" || $("#durationTypeInput").val() === "") {
             $("#durationLabel").css({
                 "color" : "rgb(252, 105, 7)",
+                // add shake animation
             });
             return;
         }
@@ -143,7 +149,7 @@ let tollTallyApp = {
     //     });
     // },
 
-    dummyCalculator : function () {
+    getResults : function () {
         $("#inputContainer").hide();
         $("#resultContainer").show();
         $("#confirm").text("Your trip from " + tollTallyApp.originInputVar + " to " + tollTallyApp.destinationInputVar +
@@ -151,16 +157,25 @@ let tollTallyApp = {
          " for " + tollTallyApp.durationIntInputVar + " " + tollTallyApp.durationTypeInputVar + ".");
         $("#google").show();
         $("#panel-direction").hide();
-
         // calculate tolls
-
+        $("#calculateButton").click(function () { 
+            tollTallyApp.countTolls();
+        });
 
         // reload page
+        $("#resetButton").click(function () { 
+            tollTallyApp.reloadPage();
+        });
 
+        // show directions
         $("#showDirectionsButton").click(function () { 
             $("#panel-direction").show();
             $("#showDirectionsButton").hide();
         });
+    },
+
+    calculateTolls : function () {
+
     },
 
 
@@ -201,7 +216,7 @@ let tollTallyApp = {
             destination: end,
             travelMode: 'DRIVING'
         }, function (response, status) {
-            console.log(response);           
+            tollTallyApp.responseObject = response;       
             if (status === 'OK') {
                 directionsDisplay.setDirections(response);
             } 
@@ -268,12 +283,40 @@ let tollTallyApp = {
         }
     },
 
+    countTolls : function () {
+        let str = "";
+        let totalDistance = tollTallyApp.responseObject.routes[0].legs[0].distance.value;
+        let roadDistance = totalDistance;
+        
+        function containsWord(str, searchValue){
+            let words = str.replace(/<\/?[^>]+(>|$)/g, "");
+            return words.indexOf(searchValue) > -1
+          }
+
+
+        // function containsWord(str, word) {
+        //     return str.match(new RegExp("\\b" + word + "\\b")) != null;
+        // }
+
+        for (let i = 0; i < tollTallyApp.responseObject.routes[0].legs[0].steps.length; i++ ) {
+            str = tollTallyApp.responseObject.routes[0].legs[0].steps[i].instructions.toLowerCase();
+            if (containsWord(str, "toll") != true) {
+            }
+            else {
+                roadDistance = roadDistance - tollTallyApp.responseObject.routes[0].legs[0].steps[i].distance.value;
+            }
+        }
+
+        let tollDistance = totalDistance - roadDistance;
+
+    console.log(totalDistance);
+    console.log(roadDistance);
+    console.log(tollDistance);
+    } 
 }
 
-
-
-
 tollTallyApp.initialize();
+
 
 
 

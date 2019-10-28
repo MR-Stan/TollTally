@@ -128,3 +128,7 @@ table.tbl-map td{
     background-color: rgb(240, 240, 14);
 }
 
+#buttonDiv {
+    margin: auto;
+    width: 50%;
+}
